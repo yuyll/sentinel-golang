@@ -22,16 +22,16 @@ import (
 )
 
 var (
-	registry *prometheus.Registry
+// registry *prometheus.Registry
 
-	httpHandler http.Handler
+// httpHandler http.Handler
 )
 
 func init() {
-	registry = prometheus.NewRegistry()
+	// registry = prometheus.NewRegistry()
 
-	h := promhttp.HandlerFor(registry, promhttp.HandlerOpts{})
-	httpHandler = promhttp.InstrumentMetricHandler(registry, h)
+	// h := promhttp.HandlerFor(registry, promhttp.HandlerOpts{})
+	// httpHandler = promhttp.InstrumentMetricHandler(registry, h)
 }
 
 type Counter struct {
@@ -62,11 +62,11 @@ func (c *Counter) Add(value float64, labelValues ...string) {
 }
 
 func (c *Counter) Register() error {
-	return registry.Register(c.cv)
+	return prometheus.Register(c.cv)
 }
 
 func (c *Counter) Unregister() bool {
-	return registry.Unregister(c.cv)
+	return prometheus.Unregister(c.cv)
 }
 
 func (c *Counter) Reset() {
@@ -89,11 +89,11 @@ func (g *Gauge) Set(value float64, labelValues ...string) {
 }
 
 func (g *Gauge) Register() error {
-	return registry.Register(g.gv)
+	return prometheus.Register(g.gv)
 }
 
 func (g *Gauge) Unregister() bool {
-	return registry.Unregister(g.gv)
+	return prometheus.Unregister(g.gv)
 }
 
 func (g *Gauge) Reset() {
@@ -117,11 +117,11 @@ func (h *Histogram) Observe(value float64, labelValues ...string) {
 }
 
 func (h *Histogram) Register() error {
-	return registry.Register(h.hv)
+	return prometheus.Register(h.hv)
 }
 
 func (h *Histogram) Unregister() bool {
-	return registry.Unregister(h.hv)
+	return prometheus.Unregister(h.hv)
 }
 
 func (h *Histogram) Reset() {
@@ -129,5 +129,5 @@ func (h *Histogram) Reset() {
 }
 
 func HTTPHandler() http.Handler {
-	return httpHandler
+	return promhttp.Handler()
 }
